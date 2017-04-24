@@ -1,13 +1,43 @@
 import requests
+import sys
 from bs4 import BeautifulSoup
 from bs4 import Comment
 
 print('Hit ctrl-c at any time to exit.\n')
 
-# Place to look and things to look for
-urlPrefix = input('Enter a url prefix; do not add trailing slash: ')
-startingPath = input('Enter a starting path; begin with a trailing slash, or leave blank: ')
-targetString = input('Enter a string to search for in the comments: ')
+"""
+sys.argv for command line arguments.
+Makes it easier to rerun and/or modify searches.
+
+sys.argv[1] -> target string
+sys.argv[2] -> url prefix
+sys.argv[3] -> starting path
+
+Get inputs direct from user if the arguments are empty.
+"""
+
+targetStringCL = sys.argv[1]
+urlPrefixCL = sys.argv[2]
+startingPathCL = sys.argv[3]
+
+if targetStringCL:
+    print ('Searching for ' + targetStringCL)
+    targetString = targetStringCL
+else:
+    targetString = input('Enter a string to search for in the comments: ')
+
+if urlPrefixCL:
+    print ('At the site ' + urlPrefixCL)
+    urlPrefix = urlPrefixCL
+else:
+    urlPrefix = input('Enter a url prefix; do not add trailing slash: ')
+
+if startingPathCL:
+    print ('Starting at ' + startingPathCL)
+    startingPath = startingPathCL
+else:
+    startingPath = input('Enter a starting path; begin with a trailing slash, or leave blank: ')
+
 
 currentUrl = ''
 soup = None
