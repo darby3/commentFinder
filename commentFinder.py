@@ -43,7 +43,7 @@ currentUrl = ''
 soup = None
 comments = None
 
-filename = 'output.txt'
+filename = 'output----' + targetString + '.txt'
 pathsFile = 'filelist.txt'
 
 
