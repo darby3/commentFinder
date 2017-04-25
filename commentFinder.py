@@ -1,5 +1,6 @@
 import requests
 import sys
+import re
 from bs4 import BeautifulSoup
 from bs4 import Comment
 
@@ -42,6 +43,7 @@ else:
 currentUrl = ''
 soup = None
 comments = None
+contents = None
 
 filename = 'output----' + targetString + '.txt'
 pathsFile = 'filelist.txt'
@@ -63,12 +65,18 @@ updateSoupObject(startingPath)
 
 # Search comments for a target string
 
+# def updateComments():
+#     global comments
+#     comments = soup.find_all(string=lambda text:isinstance(text,Comment))
 
-def updateComments():
-    global comments
-    comments = soup.find_all(string=lambda text:isinstance(text,Comment))
+# updateComments()
 
-updateComments()
+def updateContents():
+    global contents
+    contents = soup.find_all([ re.compile("^h"), "p" ])
+    print (contents)
+
+updateContents()
 
 def checkComments(incomingComments):
     print('\nChecking comments in ' + currentUrl)
@@ -81,12 +89,14 @@ def checkComments(incomingComments):
             with open(filename, 'a') as file_object:
                 file_object.write('***** Target found in ' + currentUrl + '\n')
 
-checkComments(comments)
+# checkComments(comments)
 
 # Get some outbound links to crawl
 
 outboundLinks = []
 outboundLinksMaxLength = 0
+
+badExtensions = [ '.pdf', '.png', '.css', '.js', '.gif' ]
 
 def buildLinkList(incomingLinks):
     global outboundLinksMaxLength
@@ -96,10 +106,13 @@ def buildLinkList(incomingLinks):
         if (len(href) > 1):
             if urlPrefix in href:
                 href = href[len(urlPrefix):]
-            if (href[0] == '/') and (href[-4:] != '.pdf'):
-                if (href not in outboundLinks):
-                    outboundLinks.append(href)
-                    # print(link.get('href'))
+            if (href[0] != '?') and (href[0] != '_'):
+                if href[0] != '/':
+                    href = '/' + href
+                if (href[0] == '/') and (href[-4:] not in badExtensions) and (href[-3:] not in badExtensions):
+                    if (href not in outboundLinks):
+                        outboundLinks.append(href)
+                        # print(link.get('href'))
 
     print('Outbound links: ' + str(len(outboundLinks)))
     if len(outboundLinks) > outboundLinksMaxLength:
@@ -126,6 +139,6 @@ or drop out.
 
 for newPostfix in outboundLinks:
     updateSoupObject(newPostfix)
-    updateComments()
-    checkComments(comments)
+    updateContents()
+    # checkComments(comments)
     buildLinkList(soup.find_all('a'))
