@@ -71,15 +71,17 @@ def updateComments():
 updateComments()
 
 def checkComments(incomingComments):
-    print('\nChecking comments in ' + currentUrl)
+    # print('\nChecking comments in ' + currentUrl)
     for c in incomingComments:
         if targetString in c:
             print('***** Target found in ' + currentUrl)
-            print(c)
-            print('\n')
+            # print(c)
+            # print('\n')
 
             with open(filename, 'a') as file_object:
                 file_object.write('***** Target found in ' + currentUrl + '\n')
+                file_object.write(c)
+                file_object.write('\n\n')
 
 checkComments(comments)
 
@@ -101,10 +103,10 @@ def buildLinkList(incomingLinks):
                     outboundLinks.append(href)
                     # print(link.get('href'))
 
-    print('Outbound links: ' + str(len(outboundLinks)))
+    # print('Outbound links: ' + str(len(outboundLinks)))
     if len(outboundLinks) > outboundLinksMaxLength:
         outboundLinksMaxLength = len(outboundLinks)
-        print('New outboundLinksMaxLength:' + str(outboundLinksMaxLength))
+        # print('New outboundLinksMaxLength:' + str(outboundLinksMaxLength))
 
         with open(pathsFile, 'w') as paths_file_object:
             for item in outboundLinks:
